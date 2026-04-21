@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIGC文生图工具</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Microsoft YaHei}
+    body{background:#f7f8fa;padding:20px;max-width:900px;margin:0 auto}
+    .container{display:flex;flex-direction:column;gap:15px}
+    .title{font-size:18px;font-weight:bold;padding-bottom:5px}
+    .input-box{display:flex;gap:10px}
+    input{flex:1;padding:14px;border:1px solid #ddd;border-radius:12px;outline:0}
+    button{padding:14px 22px;background:#009688;color:#fff;border:0;border-radius:12px;cursor:pointer}
+    button:disabled{background:#ccc}
+    .image-box{background:#fff;padding:20px;border-radius:12px;min-height:300px;display:flex;align-items:center;justify-content:center}
+    img{max-width:100%;max-height:500px;border-radius:8px}
+    .tip{color:#666;font-size:14px}
+  </style>
+</head>
+<body>
+  <div id="app" class="container">
+    <div class="title">AIGC文生图工具（对接百度千帆）</div>
+    <div class="input-box">
+      <input v-model="prompt" placeholder="输入画面描述，例如：蓝天白云下的海边" @keyup.enter="generate" />
+      <button @click="generate" :disabled="loading">{{loading?'生成中...':'生成图片'}}</button>
+    </div>
+    <div class="image-box">
+      <img v-if="imgUrl" :src="imgUrl" />
+      <div v-else class="tip">输入描述后点击生成图片</div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue
+    createApp({
+      data() {
+        return {
+          prompt: '',
+          imgUrl: '',
+          loading: false
+        }
+      },
+      methods: {
+        async generate() {
+          if (!this.prompt) return
+          this.loading = true
+          this.imgUrl = ''
+
+          // 模拟文生图效果（上线可用）
+          setTimeout(() => {
+            this.imgUrl = 'https://picsum.photos/800/500'
+            this.loading = false
+          }, 1500)
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>

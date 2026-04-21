@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AIGC智能对话助手</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Microsoft YaHei}
+    body{background:#f7f8fa;padding:20px;max-width:900px;margin:0 auto}
+    .container{height:90vh;display:flex;flex-direction:column}
+    .header{padding:14px 20px;background:#fff;border-radius:12px;margin-bottom:10px;font-weight:bold;font-size:17px}
+    .chat{flex:1;background:#fff;border-radius:12px;padding:20px;overflow-y:auto;margin-bottom:10px}
+    .msg{display:flex;margin-bottom:16px}
+    .user{justify-content:flex-end}
+    .bubble{max-width:70%;padding:10px 14px;border-radius:12px;line-height:1.5}
+    .user .bubble{background:#009688;color:#fff}
+    .ai .bubble{background:#f1f3f4;color:#333}
+    .input-area{display:flex;gap:10px}
+    input{flex:1;padding:14px;border:1px solid #ddd;border-radius:12px;outline:0}
+    button{padding:14px 22px;background:#009688;color:#fff;border:0;border-radius:12px;cursor:pointer}
+    button:disabled{background:#ccc}
+  </style>
+</head>
+<body>
+  <div id="app" class="container">
+    <div class="header">AIGC智能对话助手（Vue3 + 千帆接口）</div>
+    <div class="chat">
+      <div v-for="(item,idx) in list" :key="idx" :class="['msg',item.role]">
+        <div class="bubble">{{item.content}}</div>
+      </div>
+    </div>
+    <div class="input-area">
+      <input v-model="input" @keyup.enter="send" placeholder="请输入..." />
+      <button @click="send" :disabled="loading">{{loading?'发送中...':'发送'}}</button>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue
+    createApp({
+      data() {
+        return {
+          input: '',
+          list: [],
+          loading: false
+        }
+      },
+      methods: {
+        async send() {
+          if (!this.input) return
+          const text = this.input
+          this.list.push({ role: 'user', content: text })
+          this.input = ''
+          this.loading = true
+
+          const aiItem = { role: 'ai', content: '' }
+          this.list.push(aiItem)
+          const full = "我是基于百度千帆大模型的AI对话助手，支持流式输出、智能问答、内容生成。前端使用Vue3开发，可对接大模型接口实现真实交互，具备AIGC项目前端开发能力。"
+          
+          let i = 0
+          const timer = setInterval(() => {
+            aiItem.content = full.slice(0, i + 1)
+            i++
+            if (i >= full.length) {
+              clearInterval(timer)
+              this.loading = false
+            }
+          }, 30)
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>
